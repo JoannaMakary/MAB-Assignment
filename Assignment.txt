@@ -1,0 +1,14 @@
+With the excel file "example.xlsx", write a html file with the following requirements:
+
+1. Write a function in javascript to parse the "Fitment Description" column of all the rows in the excel file into a variable with the following format:
+
+2016|Kia    |Optima |- 305mm (12.01") Diameter Rotor
+2017|Kia    |Optima |- 305mm (12.01") Diameter Rotor
+2018|Kia    |Optima |- 305mm (12.01") Diameter Rotor
+2018|Hyundai|Kona   |- 1.6 L4 Engine - 2.0 L4 Engine, AWD
+2004|Honda  |Civic  |
+etc.
+
+2. Present this data as four dropdowns (Year, Make, Model, Notes). Each dropdown should constrain its options so that only parsed cars can be selected.
+
+3. Use pure css to style dropdowns so that hovering over a dropdown makes it flash briefly while shaking slightly.

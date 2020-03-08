@@ -1,0 +1,458 @@
+<!--
+    Assignment for Max Advanced Brakes
+    Post-Interview Skills Evaluation
+    Written by Joanna Makary
+
+    Assumption for the assignment: created everything in a HTML file to fit the requirements.
+    Although ideally would separate into separate external CSS files and Javascript files.
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Max Advanced Brakes Assignment</title>
+    <link rel="icon" type="image/png" href="https://www.maxbrakes.com/static/favicon.ico" />
+    <!-- Added Bootstrap afterwards to make the site more visually appealing -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+    <!-- SheetJS to parse through Excel file-->
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+
+    <style>
+        /* Pure CSS Flash Animation - browser support included*/
+        
+        @-webkit-keyframes flashshake {
+            0% {
+                opacity: .03;
+            }
+            20% {
+                transform: translate3d(4px, 0, 0);
+            }
+            40% {
+                transform: translate3d(-4px, 0, 0);
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        
+        @-moz-keyframes flashshake {
+            0% {
+                opacity: .03;
+            }
+            20% {
+                transform: translate3d(4px, 0, 0);
+            }
+            40% {
+                transform: translate3d(-4px, 0, 0);
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        
+        @-o-keyframes flashshake {
+            0% {
+                opacity: .03;
+            }
+            20% {
+                transform: translate3d(4px, 0, 0);
+            }
+            40% {
+                transform: translate3d(-4px, 0, 0);
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes flashshake {
+            0% {
+                opacity: .03;
+            }
+            20% {
+                transform: translate3d(4px, 0, 0);
+            }
+            40% {
+                transform: translate3d(-4px, 0, 0);
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        
+        .selectType:hover {
+            opacity: 1;
+            -webkit-animation: flashshake 1s;
+            -moz-animation: flashshake 1s;
+            -o-animation: flashshake 1s;
+            animation: flashshake 1s;
+        }
+        /* Other CSS for making the page a little more visually appealing  */
+        
+        body {
+            background-color: #3A3838;
+            color: white;
+        }
+        
+        .container {
+            background: #464646;
+        }
+        
+        .navbar-bg {
+            background: #272828;
+        }
+        
+        button {
+            margin-left: 3px;
+            margin-right: 3px;
+        }
+        
+        select {
+            width: 20%;
+            margin-right: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-bg pt-5 pb-2">
+        <a class="navbar-brand ml-2 mr-5" href="">Max Advanced Brakes Assignment</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="">Home &nbsp;|</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="#" id="descLink">Description &nbsp;|</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="#" id="readLink">README</a>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav mr-sm-0">
+                <li class="nav-item active">
+                    <a class="nav-link" href="">Joanna Makary</a>
+                </li>
+            </ul>
+
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="container" id="main">
+            <form class="text-center mt-2 pt-4">
+                <label for="input"><h5>Select an Excel file:</h5></label><br>
+                <!-- Accepting excel documents only-->
+                <input type="file" id="input" accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" /><em>(This will display the raw version)</em><br>
+            </form>
+            <br>
+            <div class="text-center" id="buttonArea"></div>
+            <br>
+            <div id="dropdowns" class="text-center"></div>
+            <div id="result"></div>
+            <br>
+        </div>
+    </div>
+
+    <script>
+        var result = document.getElementById('result');
+        var dropdowns = document.getElementById('dropdowns');
+        /* Saving results of the extractions below to global arrays */
+        var yearString = [],
+            makeString = [],
+            modelString = [],
+            descString = [];
+
+        /* Function provided by SheetJS to parse Excel file by uploading */
+        function handleFile(e) {
+            var files = e.target.files,
+                f = files[0];
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var data = new Uint8Array(e.target.result);
+                var workbook = XLSX.read(data, {
+                    type: 'array'
+                });
+
+                /* Create JSON Object to parse through the Excel sheet */
+                var sheet_name_list = workbook.SheetNames;
+                var excelJSON = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
+
+                var first_sheet_name = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[first_sheet_name];
+                var htmlstr = XLSX.write(workbook, {
+                    worksheet: worksheet,
+                    type: 'binary',
+                    bookType: 'html'
+                });
+
+                rawSheet(htmlstr);
+                fitmentDescOnly(excelJSON, htmlstr);
+
+            };
+            reader.readAsArrayBuffer(f);
+        }
+        input_dom_element = (document.getElementById("input"))
+        input_dom_element.addEventListener('change', handleFile, false);
+
+
+        function rawSheet(htmlstr) {
+            /* Clear HTML if anything is displayed */
+            result.innerHTML = "";
+            // /* Get full raw worksheet */
+            result.innerHTML += htmlstr;
+        }
+
+        function fitmentDescOnly(excelJSON, htmlstr) {
+            /* Saving everything under the Fitment Description column */
+            var fitmentDescriptions = [];
+            excelJSON.forEach(obj => {
+                fitmentDescriptions.push(obj["Fitment Description"]);
+            });
+            /* Separate each Fitment Description individually */
+            var individualDescriptions = [];
+            for (let i = 0; i < fitmentDescriptions.length; i++) {
+                /** Results in an Object **/
+                individualDescriptions.push(fitmentDescriptions[i].toString().split(/\n\n/));
+            }
+            createButtons(individualDescriptions, htmlstr);
+        }
+
+        function createButtons(individualDescriptions, htmlstr) {
+            /* View Fitment Description column only */
+            var descriptionButton = document.createElement("button");
+            descriptionButton.innerHTML = "View Fitment Descriptions";
+            descriptionButton.id = "descriptionButton";
+            buttonArea.appendChild(descriptionButton);
+            descriptionButton.addEventListener("click", function() {
+                result.innerHTML = "";
+                for (var key in individualDescriptions) {
+                    for (var key2 in individualDescriptions[key]) {
+                        result.innerHTML += individualDescriptions[key][key2] + "<br>";
+                    }
+                }
+                $("#descriptionButton").addClass("active");
+                /* Makes only this button active, removes from other buttons */
+                $("#descriptionButton").parent().children('button').not(this).removeClass("active");
+            });
+
+            /* Creates a button to Format the raw file */
+            var formatButton = document.createElement("button");
+            formatButton.innerHTML = "Formatted";
+            formatButton.id = "formatButton";
+            buttonArea.appendChild(formatButton);
+            $("#formatButton").click(function() {
+                /* Use the extractRegex function below if button is clicked */
+                if (!$("#formatButton").hasClass("active")) {
+                    /* Do not loop multiple times */
+                    $("#formatButton").addClass("active");
+                    extractRegex(individualDescriptions);
+                }
+                $("#formatButton").addClass("active");
+                $("#formatButton").parent().children('button').not(this).removeClass("active")
+            });
+
+            /* Creates a button to Create Dropdowns */
+            var dropdownButton = document.createElement("button");
+            dropdownButton.innerHTML = "Create dropdowns";
+            dropdownButton.id = "dropdownButton";
+            buttonArea.appendChild(dropdownButton);
+            /* Use the insertdropdown function below if button is clicked */
+            dropdownButton.addEventListener("click", function() {
+                /* Format for the function first */
+                extractRegex(individualDescriptions);
+                result.innerHTML = "";
+                dropdowns.innerHTML = "";
+                /* For each dropdown menu, create default and insert data */
+                defaultSelect("yearSelect", "optionYear", yearString, "Year");
+                defaultSelect("makeSelect", "optionMake", makeString, "Make");
+                defaultSelect("modelSelect", "optionModel", modelString, "Model");
+                defaultSelect("notesSelect", "optionNotes", descString, "Desc");
+
+                $("#dropdownButton").addClass("active");
+                $("#dropdownButton").parent().children('button').not(this).removeClass("active");
+            });
+
+            /* Creates a button to show Raw data (again) */
+            var rawButton = document.createElement("button");
+            rawButton.innerHTML = "Raw";
+            rawButton.id = "rawButton";
+            buttonArea.appendChild(rawButton);
+            rawButton.addEventListener("click", function() {
+                rawSheet(htmlstr);
+                $("#rawButton").addClass("active");
+                $("#rawButton").parent().children('button').not(this).removeClass("active");
+            });
+
+            /* Creates a button to Clear HTML and data */
+            var clearButton = document.createElement("button");
+            clearButton.innerHTML = "Clear";
+            clearButton.id = "clearButton";
+            buttonArea.appendChild(clearButton);
+            clearButton.addEventListener("click", function() {
+                result.innerHTML = "";
+                dropdowns.innerHTML = "";
+                $("#clearButton").addClass("active");
+                $("#clearButton").parent().children('button').not(this).removeClass("active");
+            });
+        }
+
+        function extractRegex(individualDescriptions) {
+            var results = [];
+            /* Extracting each part within Fitment Description with Regex */
+            for (var key in individualDescriptions) {
+                for (var key2 in individualDescriptions[key]) {
+                    // if the year is 20__ - 20__
+                    if (individualDescriptions[key][key2].match(/^\d+—?–? ?-?–? ?\d+/)) {
+                        var year = individualDescriptions[key][key2].match(/^\d+—?–? ?-?–? ?\d+/).join('').toString();
+                        var make = individualDescriptions[key][key2].match(/(?<=\d+\s+)\w+/).join('').toString();
+                        var model = individualDescriptions[key][key2].match(/(?<=\w+ \w+ )\S+/).join('').toString();
+                        // Some do not have descriptions
+                        if (individualDescriptions[key][key2].match(/(?<=\w+ \w+ \w+\W).*/)) {
+                            var desc = individualDescriptions[key][key2].match(/(?<=\w+ \w+ \w+\W+).*/g).join('').toString();
+                        } else if (individualDescriptions[key][key2].match(/(?<=\w+ \w+ \w+ )\S+/)) {
+                            var desc = individualDescriptions[key][key2].match(/(?<=\w+ \w+ \w+ )\S+/).join('').toString();
+                        } else {
+                            var desc = " ";
+                        }
+
+                        // if the year is 20__
+                    } else if (individualDescriptions[key][key2].match(/\d+/)) {
+                        var year = individualDescriptions[key][key2].match(/\d+/).join('').toString();
+                        var make = individualDescriptions[key][key2].match(/(?<=\d+\s+)\w+/).join('').toString();
+                        var model = individualDescriptions[key][key2].match(/(?<=\w+ \w+ \w?)\S+( \S+)?/).join('').toString();
+                        if (individualDescriptions[key][key2].match(/(?<=\d+ \w+ \w+ \w+\W+).*/)) {
+                            var desc = individualDescriptions[key][key2].match(/(?<=\d+ \w+ \w+ \w+\W+).*/).join('').toString();
+                        } else if (individualDescriptions[key][key2].match(/(?<=\d+ \w+ \w+\W+).*/)) {
+                            var desc = individualDescriptions[key][key2].match(/(?<=\d+ \w+ \w+ \w+\W+).*/).join('').toString();
+                        } else {
+                            var desc = " ";
+                        }
+                    }
+                    yearString.push(year);
+                    makeString.push(make);
+                    modelString.push(model);
+                    descString.push(desc);
+
+                    /* Formatting as requested in question 1 */
+                    var fullString = year + " | " + make + " | " + model + " | " + desc;
+                    results.push(fullString);
+                }
+            }
+            showFormatted(results);
+        }
+
+        function defaultSelect(selectType, optionSelect, selectString, selectTitle) {
+            var selectType = document.createElement("SELECT");
+            selectType.setAttribute("class", "selectType");
+            dropdowns.appendChild(selectType);
+            // Shows starting option (Year, Make, Model, Notes) respectively
+            var optionSelect = document.createElement("option");
+            optionSelect.setAttribute("class", "optionSelect");
+            optionSelect.text = selectTitle;
+            selectType.appendChild(optionSelect);
+            $(".optionSelect").attr("selected", true);
+            $(".optionSelect").attr("disabled", true);
+            $(".optionSelect").attr("hidden", true);
+
+            insertDropdowns(selectType, optionSelect, selectString);
+        }
+
+        function insertDropdowns(selectType, optionSelect, selectString) {
+            /* To insert the data into the selected dropdown */
+            var appendedData = [];
+
+            for (var key in selectString) {
+                var optionSelect = document.createElement("option");
+                optionSelect.text = selectString[key];
+
+                // Check if an entry already exists
+                if (!appendedData.includes(selectString[key])) {
+                    selectType.appendChild(optionSelect);
+                    appendedData.push(selectString[key]);
+                }
+            }
+            dropdownLogic(selectType, optionSelect, selectString);
+        }
+
+        function dropdownLogic(selectType, optionSelect, selectString) {
+            $(".selectType").change(function() {
+                var selectedVal = $('.selectType').val();
+                var regString = /2017 - 2018|2017 - 2018|2017– 2018|2017 - 2018/;
+
+                if (selectedVal.match(regString)) {
+                    $('select:first option').each(function(k, v) {
+                        if (!($(this).val().match(/2017 - 2018|2017 - 2018|2017– 2018|2017 - 2018/))) {
+                            $(this).attr("hidden", true);
+                        }
+                    });
+                } else {
+                    $(this).attr("hidden", false);
+                }
+
+                $('select:nth-child(2) option').each(function(k, v) {
+                    for (var key in makeString) {
+                        if ($(this).val() != makeString[key]) {
+                            $(this).attr("hidden", true);
+                        } else {
+                            $(this).attr("hidden", false);
+                        }
+                    }
+                });
+
+                $('select:nth-child(3) option').each(function(k, v) {
+                    for (var key in modelString) {
+                        if ($(this).val() != modelString[key]) {
+                            $(this).attr("hidden", true);
+                        } else {
+                            $(this).attr("hidden", false);
+                        }
+                    }
+                });
+
+                $('select:nth-child(4) option').each(function(k, v) {
+                    for (var key in descString) {
+                        if ($(this).val() != desc[key]) {
+                            $(this).attr("hidden", true);
+                        } else {
+                            $(this).attr("hidden", false);
+                        }
+                    }
+                });
+            });
+        }
+
+        function showFormatted(results) {
+            // Get rid of previous HTML (unformatted version)
+            result.innerHTML = "";
+
+            /* To print out the whole worksheet on the page, formatted */
+            for (var key in results) {
+                result.innerHTML += results[key] + "<br>";
+            }
+        }
+
+        $(document).ready(function() {
+            $("#descLink").click(function() {
+                result.innerHTML = "";
+                result.innerHTML += "<h1>Description</h1><br> With the excel file 'example.xlsx', write a html file with the following requirements:<br><br>1. Write a function in javascript to parse the 'Fitment Description' column of all the rows in the excel file into a variable with the following format:<br><br>2016|Kia    |Optima |- 305mm (12.01\") Diameter Rotor<br>2017|Kia    |Optima |- 305mm (12.01\") Diameter Rotor<br>2018|Kia    |Optima |- 305mm (12.01\") Diameter Rotor<br>2018|Hyundai|Kona   |- 1.6 L4 Engine - 2.0 L4 Engine, AWD<br>2004|Honda  |Civic  |<br>etc.<br><br>2. Present this data as four dropdowns (Year, Make, Model, Notes). Each dropdown should constrain its options so that only parsed cars can be selected.<br><br>3. Use pure css to style dropdowns so that hovering over a dropdown makes it flash briefly while shaking slightly.<br>";
+            });
+
+            $("#readLink").click(function() {
+                result.innerHTML = "";
+                result.innerHTML += "<h1>README</h1><br>I believe this assignment was deceptively challenging. There were many assumptions I had to make, such as:<br><br>- Writing everything into \"one HTML file\"<br>- Importing an excel sheet onto a webpage without a server is difficult - I used SheetJS.<br>- Asked to format into a text version but also into a drop-down menu, I was not sure what was expected so I created buttons to do a bit of everything.<br><br>It was difficult to extract the correct data through my method of using regex as the formatting was different pretty often.<br><br>I did not create 100% functionality of the drop-down menus as I found it really difficult to parse through them without a server/database.<br><br>Overall I enjoyed trying to come up with solutions, although I am not 100% happy with my final result but I would like to continue to work on improving it in the future.";
+            });
+        });
+    </script>
+
+</body>
+
+</html>
