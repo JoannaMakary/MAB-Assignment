@@ -16,74 +16,87 @@
     <title>Max Advanced Brakes Assignment</title>
     <link rel="icon" type="image/png" href="https://www.maxbrakes.com/static/favicon.ico" />
     <!-- Added Bootstrap afterwards to make the site more visually appealing -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.js"
+        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
     <!-- SheetJS to parse through Excel file-->
     <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
 
     <style>
         /* Pure CSS Flash Animation - browser support included*/
-        
         @-webkit-keyframes flashshake {
             0% {
-                opacity: .03;
+                opacity: .03
             }
+
             20% {
                 transform: translate3d(4px, 0, 0);
             }
+
             40% {
                 transform: translate3d(-4px, 0, 0);
             }
+
             100% {
                 opacity: 1;
             }
         }
-        
+
         @-moz-keyframes flashshake {
             0% {
                 opacity: .03;
             }
+
             20% {
                 transform: translate3d(4px, 0, 0);
             }
+
             40% {
                 transform: translate3d(-4px, 0, 0);
             }
+
             100% {
                 opacity: 1;
             }
         }
-        
+
         @-o-keyframes flashshake {
             0% {
                 opacity: .03;
             }
+
             20% {
                 transform: translate3d(4px, 0, 0);
             }
+
             40% {
                 transform: translate3d(-4px, 0, 0);
             }
+
             100% {
                 opacity: 1;
             }
         }
-        
+
         @keyframes flashshake {
             0% {
                 opacity: .03;
             }
+
             20% {
                 transform: translate3d(4px, 0, 0);
             }
+
             40% {
                 transform: translate3d(-4px, 0, 0);
             }
+
             100% {
                 opacity: 1;
             }
         }
-        
+
         .selectType:hover {
             opacity: 1;
             -webkit-animation: flashshake 1s;
@@ -91,26 +104,44 @@
             -o-animation: flashshake 1s;
             animation: flashshake 1s;
         }
+
         /* Other CSS for making the page a little more visually appealing  */
-        
         body {
             background-color: #3A3838;
             color: white;
         }
-        
+
         .container {
             background: #464646;
         }
-        
+
+        .navbar {
+            border-bottom: 5px solid #F36E23;
+        }
+
         .navbar-bg {
             background: #272828;
         }
-        
+
+        .maxtext {
+            font-size: 55px;
+            letter-spacing: 5px;
+            color: #F15D38;
+        }
+
+        .brakestext {
+            font-size: 11px;
+            letter-spacing: 2px;
+            position: absolute;
+            bottom: 10px;
+            left: 21px;
+        }
+
         button {
             margin-left: 3px;
             margin-right: 3px;
         }
-        
+
         select {
             width: 20%;
             margin-right: 15px;
@@ -119,13 +150,15 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-bg pt-5 pb-2">
-        <a class="navbar-brand ml-2 mr-5" href="">Max Advanced Brakes Assignment</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-bg pb-2">
+        <a class="navbar-brand ml-2 mr-5" href=""><span class="maxtext">MAX</span> <span class="brakestext">ADVANCED
+                BRAKES</span>&nbsp;&nbsp; Assignment</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
+            <ul class="navbar-nav mr-auto mt-4">
                 <li class="nav-item active">
                     <a class="nav-link" href="">Home &nbsp;|</a>
                 </li>
@@ -139,7 +172,7 @@
 
             <ul class="navbar-nav mr-sm-0">
                 <li class="nav-item active">
-                    <a class="nav-link" href="">Joanna Makary</a>
+                    <a class="nav-link mt-4" href="">Joanna Makary</a>
                 </li>
             </ul>
 
@@ -149,9 +182,13 @@
     <div class="container">
         <div class="container" id="main">
             <form class="text-center mt-2 pt-4">
-                <label for="input"><h5>Select an Excel file:</h5></label><br>
+                <label for="input">
+                    <h5>Select an Excel file:</h5>
+                </label><br>
                 <!-- Accepting excel documents only-->
-                <input type="file" id="input" accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" /><em>(This will display the raw version)</em><br>
+                <input type="file" id="input"
+                    accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" /><em>(This
+                    will display the raw version)</em><br>
             </form>
             <br>
             <div class="text-center" id="buttonArea"></div>
@@ -170,13 +207,14 @@
             makeString = [],
             modelString = [],
             descString = [];
+        var dropdownsList = [];
 
         /* Function provided by SheetJS to parse Excel file by uploading */
         function handleFile(e) {
             var files = e.target.files,
                 f = files[0];
             var reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 var data = new Uint8Array(e.target.result);
                 var workbook = XLSX.read(data, {
                     type: 'array'
@@ -232,7 +270,7 @@
             descriptionButton.innerHTML = "View Fitment Descriptions";
             descriptionButton.id = "descriptionButton";
             buttonArea.appendChild(descriptionButton);
-            descriptionButton.addEventListener("click", function() {
+            descriptionButton.addEventListener("click", function () {
                 result.innerHTML = "";
                 for (var key in individualDescriptions) {
                     for (var key2 in individualDescriptions[key]) {
@@ -249,7 +287,7 @@
             formatButton.innerHTML = "Formatted";
             formatButton.id = "formatButton";
             buttonArea.appendChild(formatButton);
-            $("#formatButton").click(function() {
+            $("#formatButton").click(function () {
                 /* Use the extractRegex function below if button is clicked */
                 if (!$("#formatButton").hasClass("active")) {
                     /* Do not loop multiple times */
@@ -266,16 +304,13 @@
             dropdownButton.id = "dropdownButton";
             buttonArea.appendChild(dropdownButton);
             /* Use the insertdropdown function below if button is clicked */
-            dropdownButton.addEventListener("click", function() {
+            dropdownButton.addEventListener("click", function () {
                 /* Format for the function first */
                 extractRegex(individualDescriptions);
                 result.innerHTML = "";
                 dropdowns.innerHTML = "";
                 /* For each dropdown menu, create default and insert data */
-                defaultSelect("yearSelect", "optionYear", yearString, "Year");
-                defaultSelect("makeSelect", "optionMake", makeString, "Make");
-                defaultSelect("modelSelect", "optionModel", modelString, "Model");
-                defaultSelect("notesSelect", "optionNotes", descString, "Desc");
+                defaultSelect(dropdownsList);
 
                 $("#dropdownButton").addClass("active");
                 $("#dropdownButton").parent().children('button').not(this).removeClass("active");
@@ -286,7 +321,7 @@
             rawButton.innerHTML = "Raw";
             rawButton.id = "rawButton";
             buttonArea.appendChild(rawButton);
-            rawButton.addEventListener("click", function() {
+            rawButton.addEventListener("click", function () {
                 rawSheet(htmlstr);
                 $("#rawButton").addClass("active");
                 $("#rawButton").parent().children('button').not(this).removeClass("active");
@@ -297,7 +332,7 @@
             clearButton.innerHTML = "Clear";
             clearButton.id = "clearButton";
             buttonArea.appendChild(clearButton);
-            clearButton.addEventListener("click", function() {
+            clearButton.addEventListener("click", function () {
                 result.innerHTML = "";
                 dropdowns.innerHTML = "";
                 $("#clearButton").addClass("active");
@@ -317,26 +352,39 @@
                         var model = individualDescriptions[key][key2].match(/(?<=\w+ \w+ )\S+/).join('').toString();
                         // Some do not have descriptions
                         if (individualDescriptions[key][key2].match(/(?<=\w+ \w+ \w+\W).*/)) {
-                            var desc = individualDescriptions[key][key2].match(/(?<=\w+ \w+ \w+\W+).*/g).join('').toString();
+                            var desc = individualDescriptions[key][key2].match(/(?<=\w+ \w+ \w+\W+).*/g).join('')
+                                .toString();
                         } else if (individualDescriptions[key][key2].match(/(?<=\w+ \w+ \w+ )\S+/)) {
-                            var desc = individualDescriptions[key][key2].match(/(?<=\w+ \w+ \w+ )\S+/).join('').toString();
+                            var desc = individualDescriptions[key][key2].match(/(?<=\w+ \w+ \w+ )\S+/).join('')
+                                .toString();
                         } else {
                             var desc = " ";
                         }
-
                         // if the year is 20__
                     } else if (individualDescriptions[key][key2].match(/\d+/)) {
                         var year = individualDescriptions[key][key2].match(/\d+/).join('').toString();
                         var make = individualDescriptions[key][key2].match(/(?<=\d+\s+)\w+/).join('').toString();
-                        var model = individualDescriptions[key][key2].match(/(?<=\w+ \w+ \w?)\S+( \S+)?/).join('').toString();
+                        var model = individualDescriptions[key][key2].match(/(?<=\w+ \w+ \w?)\S+( \S+)?/).join('')
+                            .toString();
                         if (individualDescriptions[key][key2].match(/(?<=\d+ \w+ \w+ \w+\W+).*/)) {
-                            var desc = individualDescriptions[key][key2].match(/(?<=\d+ \w+ \w+ \w+\W+).*/).join('').toString();
+                            var desc = individualDescriptions[key][key2].match(/(?<=\d+ \w+ \w+ \w+\W+).*/).join('')
+                                .toString();
                         } else if (individualDescriptions[key][key2].match(/(?<=\d+ \w+ \w+\W+).*/)) {
-                            var desc = individualDescriptions[key][key2].match(/(?<=\d+ \w+ \w+ \w+\W+).*/).join('').toString();
+                            var desc = individualDescriptions[key][key2].match(/(?<=\d+ \w+ \w+ \w+\W+).*/).join('')
+                                .toString();
                         } else {
                             var desc = " ";
                         }
                     }
+                    // Gets rid of duplicates with different formatting for more than one year
+                    if (year.match(/\s(-|–|—)(?=\d+)|(?<=\d)(-|–|—)\s|—|\s(-|–|—)\s/g)) {
+                        year = year.replace(/\s(-|–|—)(?=\d+)|(?<=\d)(-|–|—)\s|—|\s(-|–|—)\s/g, "-");
+                    }
+
+                    // for the Logic of the dropdowns
+                    dropdownsList.push([year, make, model, desc]);
+
+                    /* To create initial dropdowns */
                     yearString.push(year);
                     makeString.push(make);
                     modelString.push(model);
@@ -350,84 +398,130 @@
             showFormatted(results);
         }
 
-        function defaultSelect(selectType, optionSelect, selectString, selectTitle) {
-            var selectType = document.createElement("SELECT");
-            selectType.setAttribute("class", "selectType");
-            dropdowns.appendChild(selectType);
-            // Shows starting option (Year, Make, Model, Notes) respectively
-            var optionSelect = document.createElement("option");
-            optionSelect.setAttribute("class", "optionSelect");
-            optionSelect.text = selectTitle;
-            selectType.appendChild(optionSelect);
-            $(".optionSelect").attr("selected", true);
-            $(".optionSelect").attr("disabled", true);
-            $(".optionSelect").attr("hidden", true);
+        function defaultSelect(dropdownsList) {
+            var yearSelect = document.createElement("SELECT");
+            yearSelect.setAttribute("class", "yearSelect");
+            dropdowns.appendChild(yearSelect);
+            // Shows starting option
+            var optionYear = document.createElement("option");
+            optionYear.setAttribute("class", "optionYear");
+            optionYear.text = "Year";
+            yearSelect.appendChild(optionYear);
+            $(".optionYear").attr("selected", true);
+            $(".optionYear").attr("disabled", true);
+            $(".optionYear").attr("hidden", true);
 
-            insertDropdowns(selectType, optionSelect, selectString);
+            var makeSelect = document.createElement("SELECT");
+            makeSelect.setAttribute("class", "makeSelect");
+            dropdowns.appendChild(makeSelect);
+            // Shows starting option
+            var optionMake = document.createElement("option");
+            optionMake.setAttribute("class", "optionMake");
+            optionMake.text = "Make";
+            makeSelect.appendChild(optionMake);
+            $(".optionMake").attr("selected", true);
+            $(".optionMake").attr("disabled", true);
+            $(".optionMake").attr("hidden", true);
+
+            var modelSelect = document.createElement("SELECT");
+            modelSelect.setAttribute("class", "modelSelect");
+            dropdowns.appendChild(modelSelect);
+            // Shows starting option
+            var optionModel = document.createElement("option");
+            optionModel.setAttribute("class", "optionModel");
+            optionModel.text = "Model";
+            modelSelect.appendChild(optionModel);
+            $(".optionModel").attr("selected", true);
+            $(".optionModel").attr("disabled", true);
+            $(".optionModel").attr("hidden", true);
+
+            var descSelect = document.createElement("SELECT");
+            descSelect.setAttribute("class", "descSelect");
+            dropdowns.appendChild(descSelect);
+            // Shows starting option
+            var optionDesc = document.createElement("option");
+            optionDesc.setAttribute("class", "optionDesc");
+            optionDesc.text = "Desc";
+            descSelect.appendChild(optionDesc);
+            $(".optionDesc").attr("selected", true);
+            $(".optionDesc").attr("disabled", true);
+            $(".optionDesc").attr("hidden", true);
+
+            insertDropdowns(yearSelect, optionYear, makeSelect, optionMake, modelSelect, optionModel, descSelect,
+                optionDesc, dropdownsList);
         }
 
-        function insertDropdowns(selectType, optionSelect, selectString) {
+        function insertDropdowns(yearSelect, optionYear, makeSelect, optionMake, modelSelect, optionModel, descSelect,
+            optionDesc, dropdownsList) {
             /* To insert the data into the selected dropdown */
             var appendedData = [];
 
-            for (var key in selectString) {
-                var optionSelect = document.createElement("option");
-                optionSelect.text = selectString[key];
-
+            for (var i in dropdownsList) {
+                for (var j in dropdownsList[i]) {}
+                var optionYear = document.createElement("option");
+                optionYear.text = dropdownsList[i][0];
                 // Check if an entry already exists
-                if (!appendedData.includes(selectString[key])) {
-                    selectType.appendChild(optionSelect);
-                    appendedData.push(selectString[key]);
+                if (!appendedData.includes(dropdownsList[i][0])) {
+                    yearSelect.appendChild(optionYear);
+                    appendedData.push(dropdownsList[i][0]);
                 }
             }
-            dropdownLogic(selectType, optionSelect, selectString);
+
+            // Sorts the dropdown
+            $(function () {
+                var select = $('.yearSelect');
+                select.html(select.find('option').sort(function (x, y) {
+                    return $(x).text() > $(y).text() ? 1 : -1;
+                }));
+            });
+
+            dropdownLogic(dropdownsList);
         }
 
-        function dropdownLogic(selectType, optionSelect, selectString) {
-            $(".selectType").change(function() {
-                var selectedVal = $('.selectType').val();
-                var regString = /2017 - 2018|2017 - 2018|2017– 2018|2017 - 2018/;
+        function dropdownLogic(dropdownsList) {
+            // $(".selectType").change(function () {
+            //     var selectedVal = $('.selectType').val();
 
-                if (selectedVal.match(regString)) {
-                    $('select:first option').each(function(k, v) {
-                        if (!($(this).val().match(/2017 - 2018|2017 - 2018|2017– 2018|2017 - 2018/))) {
-                            $(this).attr("hidden", true);
-                        }
-                    });
-                } else {
-                    $(this).attr("hidden", false);
-                }
+            //     if (selectedVal.match(regString)) {
+            //         $('select:first option').each(function (k, v) {
+            //             if (!($(this).val().match(/2017\W+2018/))) {
+            //                 $(this).attr("hidden", true);
+            //             }
+            //         });
+            //     } else {
+            //         $(this).attr("hidden", false);
+            //     }
 
-                $('select:nth-child(2) option').each(function(k, v) {
-                    for (var key in makeString) {
-                        if ($(this).val() != makeString[key]) {
-                            $(this).attr("hidden", true);
-                        } else {
-                            $(this).attr("hidden", false);
-                        }
-                    }
-                });
+            //     $('select:nth-child(2) option').each(function (k, v) {
+            //         for (var key in makeString) {
+            //             if ($(this).val() != makeString[key]) {
+            //                 $(this).attr("hidden", true);
+            //             } else {
+            //                 $(this).attr("hidden", false);
+            //             }
+            //         }
+            //     });
 
-                $('select:nth-child(3) option').each(function(k, v) {
-                    for (var key in modelString) {
-                        if ($(this).val() != modelString[key]) {
-                            $(this).attr("hidden", true);
-                        } else {
-                            $(this).attr("hidden", false);
-                        }
-                    }
-                });
+            //     $('select:nth-child(3) option').each(function (k, v) {
+            //         for (var key in modelString) {
+            //             if ($(this).val() != modelString[key]) {
+            //                 $(this).attr("hidden", true);
+            //             } else {
+            //                 $(this).attr("hidden", false);
+            //             }
+            //         }
+            //     });
 
-                $('select:nth-child(4) option').each(function(k, v) {
-                    for (var key in descString) {
-                        if ($(this).val() != desc[key]) {
-                            $(this).attr("hidden", true);
-                        } else {
-                            $(this).attr("hidden", false);
-                        }
-                    }
-                });
-            });
+            //     $('select:nth-child(4) option').each(function (k, v) {
+            //         for (var key in descString) {
+            //             if ($(this).val() != desc[key]) {
+            //                 $(this).attr("hidden", true);
+            //             } else {
+            //                 $(this).attr("hidden", false);
+            //             }
+            //         }
+            //     });
+            // });
         }
 
         function showFormatted(results) {
@@ -440,15 +534,17 @@
             }
         }
 
-        $(document).ready(function() {
-            $("#descLink").click(function() {
+        $(document).ready(function () {
+            $("#descLink").click(function () {
                 result.innerHTML = "";
-                result.innerHTML += "<h1>Description</h1><br> With the excel file 'example.xlsx', write a html file with the following requirements:<br><br>1. Write a function in javascript to parse the 'Fitment Description' column of all the rows in the excel file into a variable with the following format:<br><br>2016|Kia    |Optima |- 305mm (12.01\") Diameter Rotor<br>2017|Kia    |Optima |- 305mm (12.01\") Diameter Rotor<br>2018|Kia    |Optima |- 305mm (12.01\") Diameter Rotor<br>2018|Hyundai|Kona   |- 1.6 L4 Engine - 2.0 L4 Engine, AWD<br>2004|Honda  |Civic  |<br>etc.<br><br>2. Present this data as four dropdowns (Year, Make, Model, Notes). Each dropdown should constrain its options so that only parsed cars can be selected.<br><br>3. Use pure css to style dropdowns so that hovering over a dropdown makes it flash briefly while shaking slightly.<br>";
+                result.innerHTML +=
+                    "<h1>Description</h1><br> With the excel file 'example.xlsx', write a html file with the following requirements:<br><br>1. Write a function in javascript to parse the 'Fitment Description' column of all the rows in the excel file into a variable with the following format:<br><br>2016|Kia    |Optima |- 305mm (12.01\") Diameter Rotor<br>2017|Kia    |Optima |- 305mm (12.01\") Diameter Rotor<br>2018|Kia    |Optima |- 305mm (12.01\") Diameter Rotor<br>2018|Hyundai|Kona   |- 1.6 L4 Engine - 2.0 L4 Engine, AWD<br>2004|Honda  |Civic  |<br>etc.<br><br>2. Present this data as four dropdowns (Year, Make, Model, Notes). Each dropdown should constrain its options so that only parsed cars can be selected.<br><br>3. Use pure css to style dropdowns so that hovering over a dropdown makes it flash briefly while shaking slightly.<br>";
             });
 
-            $("#readLink").click(function() {
+            $("#readLink").click(function () {
                 result.innerHTML = "";
-                result.innerHTML += "<h1>README</h1><br>I believe this assignment was deceptively challenging. There were many assumptions I had to make, such as:<br><br>- Writing everything into \"one HTML file\"<br>- Importing an excel sheet onto a webpage without a server is difficult - I used SheetJS.<br>- Asked to format into a text version but also into a drop-down menu, I was not sure what was expected so I created buttons to do a bit of everything.<br><br>It was difficult to extract the correct data through my method of using regex as the formatting was different pretty often.<br><br>I did not create 100% functionality of the drop-down menus as I found it really difficult to parse through them without a server/database.<br><br>Overall I enjoyed trying to come up with solutions, although I am not 100% happy with my final result but I would like to continue to work on improving it in the future.";
+                result.innerHTML +=
+                    "<h1>README</h1><br>I believe this assignment was deceptively challenging. There were many assumptions I had to make, such as:<br><br>- Writing everything into \"one HTML file\"<br>- Importing an excel sheet onto a webpage without a server is difficult - I used SheetJS.<br>- Asked to format into a text version but also into a drop-down menu, I was not sure what was expected so I created buttons to do a bit of everything.<br><br>It was difficult to extract the correct data through my method of using regex as the formatting was different pretty often.<br><br>I did not create 100% functionality of the drop-down menus as I found it really difficult to parse through them without a server/database.<br><br>Overall I enjoyed trying to come up with solutions, although I am not 100% happy with my final result but I would like to continue to work on improving it in the future.";
             });
         });
     </script>
