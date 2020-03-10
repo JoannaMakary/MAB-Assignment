@@ -27,7 +27,7 @@
         /* Pure CSS Flash Animation - browser support included*/
         @-webkit-keyframes flashshake {
             0% {
-                opacity: .03
+                opacity: .1;
             }
 
             20% {
@@ -45,7 +45,7 @@
 
         @-moz-keyframes flashshake {
             0% {
-                opacity: .03;
+                opacity: .1;
             }
 
             20% {
@@ -63,7 +63,7 @@
 
         @-o-keyframes flashshake {
             0% {
-                opacity: .03;
+                opacity: .1;
             }
 
             20% {
@@ -81,7 +81,7 @@
 
         @keyframes flashshake {
             0% {
-                opacity: .03;
+                opacity: .1;
             }
 
             20% {
@@ -97,7 +97,7 @@
             }
         }
 
-        .selectType:hover {
+        select:hover {
             opacity: 1;
             -webkit-animation: flashshake 1s;
             -moz-animation: flashshake 1s;
@@ -200,13 +200,9 @@
     </div>
 
     <script>
+        /* Global variables to be used by a lot of the upcoming functions */
         var result = document.getElementById('result');
         var dropdowns = document.getElementById('dropdowns');
-        /* Saving results of the extractions below to global arrays */
-        var yearString = [],
-            makeString = [],
-            modelString = [],
-            descString = [];
         var dropdownsList = [];
 
         /* Function provided by SheetJS to parse Excel file by uploading */
@@ -231,16 +227,13 @@
                     type: 'binary',
                     bookType: 'html'
                 });
-
                 rawSheet(htmlstr);
                 fitmentDescOnly(excelJSON, htmlstr);
-
             };
             reader.readAsArrayBuffer(f);
         }
         input_dom_element = (document.getElementById("input"))
         input_dom_element.addEventListener('change', handleFile, false);
-
 
         function rawSheet(htmlstr) {
             /* Clear HTML if anything is displayed */
@@ -294,6 +287,7 @@
                     $("#formatButton").addClass("active");
                     extractRegex(individualDescriptions);
                 }
+                /* Makes only this button active, removes from other buttons */
                 $("#formatButton").addClass("active");
                 $("#formatButton").parent().children('button').not(this).removeClass("active")
             });
@@ -310,8 +304,12 @@
                 result.innerHTML = "";
                 dropdowns.innerHTML = "";
                 /* For each dropdown menu, create default and insert data */
-                defaultSelect(dropdownsList);
-
+                defaultSelect("yearSelect", "yearOption", "Year", dropdownsList, 0);
+                defaultSelect("makeSelect", "makeOption", "Make", dropdownsList, 1);
+                defaultSelect("modelSelect", "modelOption", "Model", dropdownsList, 2);
+                defaultSelect("descSelect", "descOption", "Desc", dropdownsList, 3);
+                dropdownLogic(dropdownsList);
+                /* Makes only this button active, removes from other buttons */
                 $("#dropdownButton").addClass("active");
                 $("#dropdownButton").parent().children('button').not(this).removeClass("active");
             });
@@ -323,6 +321,7 @@
             buttonArea.appendChild(rawButton);
             rawButton.addEventListener("click", function () {
                 rawSheet(htmlstr);
+                /* Makes only this button active, removes from other buttons */
                 $("#rawButton").addClass("active");
                 $("#rawButton").parent().children('button').not(this).removeClass("active");
             });
@@ -335,13 +334,13 @@
             clearButton.addEventListener("click", function () {
                 result.innerHTML = "";
                 dropdowns.innerHTML = "";
+                /* Makes only this button active, removes from other buttons */
                 $("#clearButton").addClass("active");
                 $("#clearButton").parent().children('button').not(this).removeClass("active");
             });
         }
 
         function extractRegex(individualDescriptions) {
-            var results = [];
             /* Extracting each part within Fitment Description with Regex */
             for (var key in individualDescriptions) {
                 for (var key2 in individualDescriptions[key]) {
@@ -358,7 +357,7 @@
                             var desc = individualDescriptions[key][key2].match(/(?<=\w+ \w+ \w+ )\S+/).join('')
                                 .toString();
                         } else {
-                            var desc = " ";
+                            var desc = "";
                         }
                         // if the year is 20__
                     } else if (individualDescriptions[key][key2].match(/\d+/)) {
@@ -373,7 +372,7 @@
                             var desc = individualDescriptions[key][key2].match(/(?<=\d+ \w+ \w+ \w+\W+).*/).join('')
                                 .toString();
                         } else {
-                            var desc = " ";
+                            var desc = "";
                         }
                     }
                     // Gets rid of duplicates with different formatting for more than one year
@@ -381,156 +380,117 @@
                         year = year.replace(/\s(-|–|—)(?=\d+)|(?<=\d)(-|–|—)\s|—|\s(-|–|—)\s/g, "-");
                     }
 
-                    // for the Logic of the dropdowns
+                    // for the Logic of the dropdowns and formatting
                     dropdownsList.push([year, make, model, desc]);
-
-                    /* To create initial dropdowns */
-                    yearString.push(year);
-                    makeString.push(make);
-                    modelString.push(model);
-                    descString.push(desc);
-
-                    /* Formatting as requested in question 1 */
-                    var fullString = year + " | " + make + " | " + model + " | " + desc;
-                    results.push(fullString);
                 }
             }
-            showFormatted(results);
+            showFormatted(dropdownsList);
         }
 
-        function defaultSelect(dropdownsList) {
-            var yearSelect = document.createElement("SELECT");
-            yearSelect.setAttribute("class", "yearSelect");
-            dropdowns.appendChild(yearSelect);
+        function defaultSelect(xSelect, xOption, xText, dropdownsList, pos) {
+            var createSelect = document.createElement("SELECT");
+            createSelect.setAttribute("id", xSelect);
+            dropdowns.appendChild(createSelect);
             // Shows starting option
-            var optionYear = document.createElement("option");
-            optionYear.setAttribute("class", "optionYear");
-            optionYear.text = "Year";
-            yearSelect.appendChild(optionYear);
-            $(".optionYear").attr("selected", true);
-            $(".optionYear").attr("disabled", true);
-            $(".optionYear").attr("hidden", true);
+            var createOption = document.createElement("option");
+            createOption.setAttribute("class", xOption);
+            createOption.text = xText;
+            createSelect.appendChild(createOption);
+            createOption.setAttribute("hidden", true);
+            createOption.setAttribute("selected", true);
+            createOption.setAttribute("disabled", true);
 
-            var makeSelect = document.createElement("SELECT");
-            makeSelect.setAttribute("class", "makeSelect");
-            dropdowns.appendChild(makeSelect);
-            // Shows starting option
-            var optionMake = document.createElement("option");
-            optionMake.setAttribute("class", "optionMake");
-            optionMake.text = "Make";
-            makeSelect.appendChild(optionMake);
-            $(".optionMake").attr("selected", true);
-            $(".optionMake").attr("disabled", true);
-            $(".optionMake").attr("hidden", true);
-
-            var modelSelect = document.createElement("SELECT");
-            modelSelect.setAttribute("class", "modelSelect");
-            dropdowns.appendChild(modelSelect);
-            // Shows starting option
-            var optionModel = document.createElement("option");
-            optionModel.setAttribute("class", "optionModel");
-            optionModel.text = "Model";
-            modelSelect.appendChild(optionModel);
-            $(".optionModel").attr("selected", true);
-            $(".optionModel").attr("disabled", true);
-            $(".optionModel").attr("hidden", true);
-
-            var descSelect = document.createElement("SELECT");
-            descSelect.setAttribute("class", "descSelect");
-            dropdowns.appendChild(descSelect);
-            // Shows starting option
-            var optionDesc = document.createElement("option");
-            optionDesc.setAttribute("class", "optionDesc");
-            optionDesc.text = "Desc";
-            descSelect.appendChild(optionDesc);
-            $(".optionDesc").attr("selected", true);
-            $(".optionDesc").attr("disabled", true);
-            $(".optionDesc").attr("hidden", true);
-
-            insertDropdowns(yearSelect, optionYear, makeSelect, optionMake, modelSelect, optionModel, descSelect,
-                optionDesc, dropdownsList);
+            insertDropdowns(xSelect, xOption, xText, createSelect, dropdownsList, pos);
         }
 
-        function insertDropdowns(yearSelect, optionYear, makeSelect, optionMake, modelSelect, optionModel, descSelect,
-            optionDesc, dropdownsList) {
-            /* To insert the data into the selected dropdown */
+        function insertDropdowns(xSelect, xOption, xText, createSelect, dropdownsList, pos) {
+            /* To insert the data into the selected dropdown, avoiding duplicates */
             var appendedData = [];
 
             for (var i in dropdownsList) {
                 for (var j in dropdownsList[i]) {}
-                var optionYear = document.createElement("option");
-                optionYear.text = dropdownsList[i][0];
+                var createOption = document.createElement("option");
+                createOption.text = dropdownsList[i][pos];
                 // Check if an entry already exists
-                if (!appendedData.includes(dropdownsList[i][0])) {
-                    yearSelect.appendChild(optionYear);
-                    appendedData.push(dropdownsList[i][0]);
+                if (!appendedData.includes(dropdownsList[i][pos])) {
+                    createSelect.appendChild(createOption);
+                    appendedData.push(dropdownsList[i][pos]);
                 }
             }
 
-            // Sorts the dropdown
+            // Sorts the year dropdown numerically
             $(function () {
-                var select = $('.yearSelect');
+                var select = $('#yearSelect');
                 select.html(select.find('option').sort(function (x, y) {
                     return $(x).text() > $(y).text() ? 1 : -1;
                 }));
             });
-
-            dropdownLogic(dropdownsList);
         }
 
         function dropdownLogic(dropdownsList) {
-            // $(".selectType").change(function () {
-            //     var selectedVal = $('.selectType').val();
+            // Listen for changes on each dropdown menu (when an element is selected)
+            $("#yearSelect, #makeSelect, #modelSelect, #descSelect").on('change', function () {
+                var selectedVal = ($(this).val());
+                $('select:nth-child(2) option, select:nth-child(3) option, select:nth-child(4) option').each(
+                    function (k, v) {
+                        // Items to keep = dropdown options that will still stay
+                        var keepItems = new Array();
 
-            //     if (selectedVal.match(regString)) {
-            //         $('select:first option').each(function (k, v) {
-            //             if (!($(this).val().match(/2017\W+2018/))) {
-            //                 $(this).attr("hidden", true);
-            //             }
-            //         });
-            //     } else {
-            //         $(this).attr("hidden", false);
-            //     }
+                        // Changing the indices for each dropdown
+                        if ($(this).parent().is("#makeSelect")) {
+                            var ind = 0;
+                        } if ($(this).parent().is("#makeSelect")) {
+                            var ind = 1;
+                        } if ($(this).parent().is("#modelSelect")) {
+                            var ind = 2; }
+                        if ($(this).parent().is("#descSelect")) {
+                            var ind = 3;
+                        }
+                        
+                        // Parses through to add to the keepItems array
+                        for (var i in dropdownsList) {
+                            if (dropdownsList[i][0] == selectedVal) {
+                                keepItems.push(dropdownsList[i][ind]);
+                            }
+                            if (dropdownsList[i][1] == selectedVal) {
+                                keepItems.push(dropdownsList[i][ind]);
+                            }
+                            if (dropdownsList[i][2] == selectedVal) {
+                                keepItems.push(dropdownsList[i][ind]);
+                            }
+                            if (dropdownsList[i][3] == selectedVal) {
+                                keepItems.push(dropdownsList[i][ind]);
+                            }
+                        }
 
-            //     $('select:nth-child(2) option').each(function (k, v) {
-            //         for (var key in makeString) {
-            //             if ($(this).val() != makeString[key]) {
-            //                 $(this).attr("hidden", true);
-            //             } else {
-            //                 $(this).attr("hidden", false);
-            //             }
-            //         }
-            //     });
-
-            //     $('select:nth-child(3) option').each(function (k, v) {
-            //         for (var key in modelString) {
-            //             if ($(this).val() != modelString[key]) {
-            //                 $(this).attr("hidden", true);
-            //             } else {
-            //                 $(this).attr("hidden", false);
-            //             }
-            //         }
-            //     });
-
-            //     $('select:nth-child(4) option').each(function (k, v) {
-            //         for (var key in descString) {
-            //             if ($(this).val() != desc[key]) {
-            //                 $(this).attr("hidden", true);
-            //             } else {
-            //                 $(this).attr("hidden", false);
-            //             }
-            //         }
-            //     });
-            // });
+                        // If option value should be kept, keep unhidden. Else, hide it.
+                        for (var j in keepItems) {
+                            if ($(this).val() == keepItems[j]) {
+                                $(this).attr("hidden", false);
+                                break;
+                            } else {
+                                $(this).attr("hidden", true);
+                            }
+                        }
+                    });
+            });
         }
 
-        function showFormatted(results) {
+        function showFormatted(dropdownsList) {
             // Get rid of previous HTML (unformatted version)
             result.innerHTML = "";
 
-            /* To print out the whole worksheet on the page, formatted */
-            for (var key in results) {
-                result.innerHTML += results[key] + "<br>";
+            for (var i in dropdownsList) {
+                for (var j in dropdownsList[i]) {
+                    // Format with tabs and "|"
+                    if(j < 3) {
+                        result.innerHTML += dropdownsList[i][j] + "&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;";
+                    }
+                    // Else end of line, insert new line
+                    else {
+                        result.innerHTML += dropdownsList[i][j] + "<br>";
+                    }
+                }
             }
         }
 
@@ -544,7 +504,7 @@
             $("#readLink").click(function () {
                 result.innerHTML = "";
                 result.innerHTML +=
-                    "<h1>README</h1><br>I believe this assignment was deceptively challenging. There were many assumptions I had to make, such as:<br><br>- Writing everything into \"one HTML file\"<br>- Importing an excel sheet onto a webpage without a server is difficult - I used SheetJS.<br>- Asked to format into a text version but also into a drop-down menu, I was not sure what was expected so I created buttons to do a bit of everything.<br><br>It was difficult to extract the correct data through my method of using regex as the formatting was different pretty often.<br><br>I did not create 100% functionality of the drop-down menus as I found it really difficult to parse through them without a server/database.<br><br>Overall I enjoyed trying to come up with solutions, although I am not 100% happy with my final result but I would like to continue to work on improving it in the future.";
+                    "<h1>README</h1><br>I believe this assignment was deceptively challenging. There were many assumptions I had to make, such as:<br><br>- Writing everything into \"one HTML file\"<br>- Importing an excel sheet onto a webpage without a server is difficult - I used SheetJS.<br>- Asked to format into a text version but also into a drop-down menu, I was not sure what was expected so I created buttons to do a bit of everything.<br><br>It was difficult to extract the correct data through my method of using regex as the formatting was different pretty often.<br><br> It was very difficult to figure out the logic of the dropdowns because of the way I set up the data structures the first time. I initially created them without thinking about the ability to parse through the dropdowns. Once I re-read the assignment, I realized I had to change most of my code.";
             });
         });
     </script>
